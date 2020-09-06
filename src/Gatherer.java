@@ -61,10 +61,11 @@ public class Gatherer extends Actor {
             String line = readCsv();
             x = getXCoordinate(line);
             y = getYCoordinate(line);
-            drawFromTopLeft(x, y);
-            frameCounter = 300;
+
         }
 
+        // 5 ticks mean 2.5 seconds,
+        // If FPS is 120, then 300 frames take 2.5 second.
         if(frameCounter == 300) {
             moveFlag = moveFlagGenerator();
             switch(moveFlag) {
