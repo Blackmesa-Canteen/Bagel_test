@@ -8,7 +8,7 @@ import java.util.Random;
  * @author Eleanor McMurtry
  */
 public class BagelTest extends AbstractGame {
-    private Image smiley;
+    private TestClass smiley;
     private Image bagel;
     private double x = 100;
     private double y = 100;
@@ -16,7 +16,7 @@ public class BagelTest extends AbstractGame {
     public BagelTest() {
         super(1024, 768, "Hello World");
         bagel = new Image("res/bagel.png");
-        smiley = new Image("res/smiley.png");
+        smiley = new TestClass("res/images/tree.png");
     }
 
     /**
