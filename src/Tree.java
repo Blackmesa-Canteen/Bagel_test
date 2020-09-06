@@ -1,30 +1,31 @@
-import bagel.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-
-public class Tree extends Image {
+public class Tree extends Actor {
     private static int instanceCounter = 0;
-    private int treeId;
+    private int instanceId;
 
-    public Tree(String filename) {
-        super(filename);
-        treeId = instanceCounter++;
+    public Tree() {
+        super("res/images/tree.png");
+        instanceId = instanceCounter++;
     }
 
-    private String readCsv() {
-        int lineId = 0;
+    public String readCsv() {
+        int recordId = 0;
         String[] stringBuffer;
         try {
             BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
             String aLine;
             while ((aLine = in.readLine()) != null) {
-                if (lineId != treeId) {
-                    lineId++;
-                    continue;
-                }
+
                 stringBuffer = aLine.split(",");
                 if(stringBuffer[0].equals("Tree")) {
-                    return aLine;
+                    if (recordId == instanceId) {
+                        return aLine;
+                    } else {
+                        recordId++;
+                    }
                 }
             }
             System.out.println("ERROR: No more records.");
@@ -33,38 +34,6 @@ public class Tree extends Image {
             e.printStackTrace();
         }
         return "ERROR";
-    }
-
-    private double getXCoordinate(String aLine) {
-        double xCoordinate;
-
-        if (aLine.equals("ERROR")) {
-            System.out.println("Invalid info from file!");
-            return 0;
-        }
-        String[] stringBuffer = aLine.split(",");
-        xCoordinate = Double.parseDouble(stringBuffer[1]);
-        return xCoordinate;
-    }
-
-    private double getYCoordinate(String aLine) {
-        double yCoordinate;
-
-        if (aLine.equals("ERROR")) {
-            System.out.println("Invalid info from file!");
-            return 0;
-        }
-        String[] stringBuffer = aLine.split(",");
-        yCoordinate = Double.parseDouble(stringBuffer[2]);
-        return yCoordinate;
-    }
-
-    public void setTree() {
-        String line = readCsv();
-        double x = getXCoordinate(line);
-        double y = getYCoordinate(line);
-        drawFromTopLeft(x, y);
-
     }
 
 }
