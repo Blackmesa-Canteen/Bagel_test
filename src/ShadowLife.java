@@ -1,5 +1,6 @@
 import bagel.*;
 
+/*IntelliJ VCS test*/
 public class ShadowLife extends AbstractGame {
     private Image background;
 
