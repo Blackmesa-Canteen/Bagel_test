@@ -4,22 +4,22 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class ShadowLife extends AbstractGame {
-    private final Image BACKGROUND = new Image("res/images/background.png");
+
     private Actor[] treeArray;
     private Actor[] gathererArray;
+    private final Image BACKGROUND = new Image("res/images/background.png");
     private final long TICK = 500; // a tick == 500 ms
 
     /** This method will read csv file, find the number of  object with a specified name
      * , then return the instance number. The number will be handy in instantiating objects.
      */
     private int countInstances(String className) {
-        int countInstance = 0; // IDs of instance-name-matched records
+        int countInstance = 0;
         String[] stringBuffer; // store a line of record
         String aLine;
         try {
             BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
             while ((aLine = in.readLine()) != null) {
-
                 stringBuffer = aLine.split(",");
                 if(stringBuffer[0].equals(className)) {
                     countInstance++;
@@ -42,7 +42,6 @@ public class ShadowLife extends AbstractGame {
             for(i = 0; i < instanceNumber; i++) {
                 actorArray[i] = new Tree();
             }
-
         } else if (className.equals("Gatherer")) {
             for(i = 0; i < instanceNumber; i++) {
                 actorArray[i] = new Gatherer();
@@ -60,7 +59,7 @@ public class ShadowLife extends AbstractGame {
         }
     }
 
-    /** This method will deploy (tickNumber * 500)ms.
+    /** This method will deploy (tickNumber * 500) ms.
      */
     private void delayTicks(int tickNumber) {
         long start = System.currentTimeMillis();
@@ -91,7 +90,6 @@ public class ShadowLife extends AbstractGame {
      * Performs a state update.
      */
     public void update(Input input) {
-
         BACKGROUND.drawFromTopLeft(0, 0);
         deployActorArray(treeArray);
         deployActorArray(gathererArray);

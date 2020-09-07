@@ -74,6 +74,21 @@ public class Gatherer extends Actor {
                    break;
             }
 
+            /* Prevent gatherers going too far away from visible screen.
+             * They may move off the visible screen, but only in 1 tile away.
+             */
+            if (x > 1024) {
+                x = 0;
+            } else if (x < 0) {
+                x = 1024;
+            }
+
+            if (y < 0) {
+                y = 768;
+            } else if (y > 768) {
+                y = 0;
+            }
+
         }
         drawFromTopLeft(x, y);
     }
