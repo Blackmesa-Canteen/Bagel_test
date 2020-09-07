@@ -1,69 +1,81 @@
 public class Gatherer extends Actor {
 
-    private static int instanceCounter = 0; // counting gatherer objs
-    private int frameCounter = 0;
-    private double x, y;
+    private static int instanceCounter = 0; // counting gatherer obj
+    private int frameCounter = 0;  // counting frames
+    private double x, y; // coordinate
+    private boolean initialized = false;
+    private final int SPEED = 64; //a tile
+    private final int TICKS_BETWEEN_CHANGES = 5; // ticks between changes of direction
+    private enum Direction
+    {
+        UP, DOWN, LEFT, RIGHT
+    }
+    private Direction direction;
 
     public Gatherer() {
         super("res/images/gatherer.png");
         instanceId = instanceCounter++;
     }
 
-    private int moveFlagGenerator() {
-        int moveFlag;
-        double roll = Math.random();
+    /**
+     * choose the drection in random,
+     * each direction's possibility is 0.25
+     */
+    private Direction moveDirectionGenerator() {
+        double roll = Math.random(); // random number in [0, 1)
         if (roll < 0.25) {
-            moveFlag = 0;
+            return Direction.UP;
+
         } else if (roll >= 0.25 && roll < 0.5) {
-            moveFlag = 1;
+            return Direction.DOWN;
+
         } else if (roll >= 0.5 && roll < 0.75) {
-            moveFlag = 2;
+            return Direction.LEFT;
+
         } else {
-            moveFlag = 3;
+            return Direction.RIGHT;
         }
-        return moveFlag;
     }
 
-    /*
-     * https://piazza.com/class/kdfeskxlts6rr?cid=90
-     * https://blog.csdn.net/weixin_42447373/article/details/88814221
-     *
-     * */
+    /**
+     * deploy. Speed is 64 pixels per tick(a tile per second),
+     * direction will change randomly in every 5 ticks(value of TICKS_BETWEEN_CHANGES)
+     */
     public void deploy() {
-        if(frameCounter == 0) {
-            // Initialize position
+        if (!initialized) {
+            // Initialize position based on csv file
             String line = readCsv("Gatherer");
             x = getXCoordinate(line);
             y = getYCoordinate(line);
-
-        }
-
-        // 5 ticks mean 2.5 seconds,
-        // If FPS is 120, then 300 frames take 2.5 second.
-        if(frameCounter == 300) {
-            int moveFlag = moveFlagGenerator();
-            final int speed = 64; //a tile
-            switch(moveFlag) {
-                case 0 :
-                    x += speed;
-                    break;
-                case 1 :
-                    x -= speed;
-                    break;
-                case 2 :
-                    y += speed;
-                    break;
-                case 3 :
-                    y -= speed;
-                    break;
-            }
-            frameCounter = 1;
+            direction = moveDirectionGenerator();
+            initialized = true;
 
         } else {
+            // After initialization
+            if (frameCounter == TICKS_BETWEEN_CHANGES) {
+                // change direction after 5 ticks.
+                frameCounter = 0;
+                direction = moveDirectionGenerator();
+            }
+
             frameCounter++;
+            switch(direction) {
+               case RIGHT :
+                   x += SPEED;
+                   break;
+               case LEFT :
+                   x -= SPEED;
+                   break;
+               case UP :
+                   y += SPEED;
+                   break;
+               case DOWN :
+                   y -= SPEED;
+                   break;
+            }
+
         }
         drawFromTopLeft(x, y);
-
     }
 
 }

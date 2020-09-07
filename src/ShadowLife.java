@@ -4,9 +4,10 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class ShadowLife extends AbstractGame {
-    private final Image background;
+    private final Image BACKGROUND = new Image("res/images/background.png");
     private Actor[] treeArray;
     private Actor[] gathererArray;
+    private final long TICK = 500; // a tick == 500 ms
 
     /** This method will read csv file, find the number of  object with a specified name
      * , then return the instance number. The number will be handy in instantiating objects.
@@ -59,12 +60,21 @@ public class ShadowLife extends AbstractGame {
         }
     }
 
+    /** This method will deploy (tickNumber * 500)ms.
+     */
+    private void delayTicks(int tickNumber) {
+        long start = System.currentTimeMillis();
+        long end = System.currentTimeMillis();
+        while((end - start) != (TICK * tickNumber)) {
+            end = System.currentTimeMillis();
+        }
+    }
+
     /** init the world.
      */
     public ShadowLife() {
         super(1024, 768, "ShadowLife");
-        //instantiating objects
-        background = new Image("res/images/background.png");
+        //instantiating Actors
         treeArray = createInstances("Tree");
         gathererArray = createInstances("Gatherer");
     }
@@ -82,9 +92,11 @@ public class ShadowLife extends AbstractGame {
      */
     public void update(Input input) {
 
-        background.draw(Window.getWidth() / 2.0, Window.getHeight() / 2.0);
+        BACKGROUND.drawFromTopLeft(0, 0);
         deployActorArray(treeArray);
         deployActorArray(gathererArray);
 
+        //set updating frequency to 2 per second (1 tick).
+        delayTicks(1);
     }
 }

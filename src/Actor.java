@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public abstract class Actor extends Image {
 
-    protected int instanceId;
+    protected int instanceId; // used to pair instances and records in csv file.
 
     public Actor(String filename) {
         super(filename);
@@ -14,10 +14,9 @@ public abstract class Actor extends Image {
 
     /**
      * read the World file.
-     * @return     A String containing one name-matched line.
      */
     public String readCsv(String objName) {
-        int recordId = 0; // IDs of instance-name-matched records
+        int recordId = 0; // marks each name-matched record
         String[] stringBuffer; // store a line of record
         try {
             BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
@@ -25,6 +24,7 @@ public abstract class Actor extends Image {
             while ((aLine = in.readLine()) != null) {
 
                 stringBuffer = aLine.split(",");
+                // judge whether record index equals object name
                 if(stringBuffer[0].equals(objName)) {
                     if (recordId == instanceId) {
                         return aLine;
