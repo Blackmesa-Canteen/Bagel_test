@@ -1,12 +1,45 @@
 import bagel.Image;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public abstract class Actor extends Image {
+
+    protected int instanceId;
 
     public Actor(String filename) {
         super(filename);
     }
 
-    public abstract String readCsv();
+    /**
+     * read the World file.
+     * @return     A String containing one name-matched line.
+     */
+    public String readCsv(String objName) {
+        int recordId = 0; // IDs of instance-name-matched records
+        String[] stringBuffer; // store a line of record
+        try {
+            BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
+            String aLine;
+            while ((aLine = in.readLine()) != null) {
+
+                stringBuffer = aLine.split(",");
+                if(stringBuffer[0].equals(objName)) {
+                    if (recordId == instanceId) {
+                        return aLine;
+                    } else {
+                        recordId++;
+                    }
+                }
+            }
+            System.out.println("ERROR: No more records.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "ERROR";
+    }
 
     public double getXCoordinate(String aLine) {
         double xCoordinate;
@@ -32,11 +65,6 @@ public abstract class Actor extends Image {
         return yCoordinate;
     }
 
-    public void deploy() {
-        String line = readCsv();
-        double x = getXCoordinate(line);
-        double y = getYCoordinate(line);
-        drawFromTopLeft(x, y);
-    }
+    public abstract void deploy();
 
 }

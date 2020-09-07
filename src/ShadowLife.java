@@ -1,26 +1,72 @@
 import bagel.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
-/*IntelliJ VCS test*/
 public class ShadowLife extends AbstractGame {
-    private Image background;
-    private Tree[] trees;
-    private Gatherer[] gatherers;
-    private Tree tree0;
-    private Tree tree1;
-    private Tree tree2;
-    private Tree tree3;
-    private Gatherer gatherer0;
-    private Gatherer gatherer1;
+    private final Image background;
+    private Actor[] treeArray;
+    private Actor[] gathererArray;
 
+    /** This method will read csv file, find the number of  object with a specified name
+     * , then return the instance number. The number will be handy in instantiating objects.
+     */
+    private int countInstances(String className) {
+        int countInstance = 0; // IDs of instance-name-matched records
+        String[] stringBuffer; // store a line of record
+        String aLine;
+        try {
+            BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
+            while ((aLine = in.readLine()) != null) {
+
+                stringBuffer = aLine.split(",");
+                if(stringBuffer[0].equals(className)) {
+                    countInstance++;
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return countInstance;
+    }
+
+    /** This method will create Actor(Tree or Gatherer) instances.
+     */
+    private Actor[] createInstances(String className) {
+        int i;
+        int instanceNumber = countInstances(className);
+        Actor[] actorArray = new Actor[instanceNumber];
+        if (className.equals("Tree")) {
+            for(i = 0; i < instanceNumber; i++) {
+                actorArray[i] = new Tree();
+            }
+
+        } else if (className.equals("Gatherer")) {
+            for(i = 0; i < instanceNumber; i++) {
+                actorArray[i] = new Gatherer();
+            }
+        }
+
+        return actorArray;
+    }
+
+    /** This method will deploy a Actor(Tree or Gatherer) object array.
+     */
+    private void deployActorArray(Actor[] actorArray) {
+        for (Actor actor : actorArray) {
+            actor.deploy();
+        }
+    }
+
+    /** init the world.
+     */
     public ShadowLife() {
         super(1024, 768, "ShadowLife");
+        //instantiating objects
         background = new Image("res/images/background.png");
-        tree0 = new Tree();
-        tree1 = new Tree();
-        tree2 = new Tree();
-        tree3 = new Tree();
-        gatherer0 = new Gatherer();
-        gatherer1 = new Gatherer();
+        treeArray = createInstances("Tree");
+        gathererArray = createInstances("Gatherer");
     }
 
     /**
@@ -35,12 +81,10 @@ public class ShadowLife extends AbstractGame {
      * Performs a state update.
      */
     public void update(Input input) {
+
         background.draw(Window.getWidth() / 2.0, Window.getHeight() / 2.0);
-        tree0.deploy();
-        tree1.deploy();
-        tree2.deploy();
-        tree3.deploy();
-        gatherer0.deploy();
-        gatherer1.deploy();
+        deployActorArray(treeArray);
+        deployActorArray(gathererArray);
+
     }
 }

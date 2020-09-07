@@ -1,53 +1,22 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Random;
-
 public class Gatherer extends Actor {
-    private static int instanceCounter = 0;
-    private int instanceId;
+
+    private static int instanceCounter = 0; // counting gatherer objs
     private int frameCounter = 0;
-    private final int speed = 64;
     private double x, y;
-    private int moveFlag = 0;
 
     public Gatherer() {
         super("res/images/gatherer.png");
         instanceId = instanceCounter++;
     }
 
-    public String readCsv() {
-        int recordId = 0;
-        String[] stringBuffer;
-        try {
-            BufferedReader in = new BufferedReader(new FileReader("res/worlds/test.csv"));
-            String aLine;
-            while ((aLine = in.readLine()) != null) {
-
-                stringBuffer = aLine.split(",");
-                if(stringBuffer[0].equals("Gatherer")) {
-                    if (recordId == instanceId) {
-                        return aLine;
-                    } else {
-                        recordId++;
-                    }
-                }
-            }
-            System.out.println("ERROR: No more records.");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "ERROR";
-    }
-
     private int moveFlagGenerator() {
         int moveFlag;
-        if (Math.random() < 0.25) {
+        double roll = Math.random();
+        if (roll < 0.25) {
             moveFlag = 0;
-        } else if (Math.random() >= 0.25 && Math.random() < 0.5) {
+        } else if (roll >= 0.25 && roll < 0.5) {
             moveFlag = 1;
-        } else if (Math.random() >= 0.5 && Math.random() < 0.75) {
+        } else if (roll >= 0.5 && roll < 0.75) {
             moveFlag = 2;
         } else {
             moveFlag = 3;
@@ -55,10 +24,15 @@ public class Gatherer extends Actor {
         return moveFlag;
     }
 
+    /*
+     * https://piazza.com/class/kdfeskxlts6rr?cid=90
+     * https://blog.csdn.net/weixin_42447373/article/details/88814221
+     *
+     * */
     public void deploy() {
         if(frameCounter == 0) {
             // Initialize position
-            String line = readCsv();
+            String line = readCsv("Gatherer");
             x = getXCoordinate(line);
             y = getYCoordinate(line);
 
@@ -67,7 +41,8 @@ public class Gatherer extends Actor {
         // 5 ticks mean 2.5 seconds,
         // If FPS is 120, then 300 frames take 2.5 second.
         if(frameCounter == 300) {
-            moveFlag = moveFlagGenerator();
+            int moveFlag = moveFlagGenerator();
+            final int speed = 64; //a tile
             switch(moveFlag) {
                 case 0 :
                     x += speed;
@@ -90,4 +65,5 @@ public class Gatherer extends Actor {
         drawFromTopLeft(x, y);
 
     }
+
 }
