@@ -1,3 +1,5 @@
+import bagel.Window;
+
 public class Gatherer extends Actor {
 
     private static int instanceCounter = 0; // counting gatherer obj
@@ -77,15 +79,15 @@ public class Gatherer extends Actor {
             /* Prevent gatherers going too far away from visible screen.
              * They may move off the visible screen, but only in 1 tile away.
              */
-            if (x > 1024) {
+            if (x > Window.getWidth()) {
                 x = 0;
             } else if (x < 0) {
-                x = 1024;
+                x = Window.getWidth();
             }
 
             if (y < 0) {
-                y = 768;
-            } else if (y > 768) {
+                y = Window.getHeight();
+            } else if (y > Window.getHeight()) {
                 y = 0;
             }
 
